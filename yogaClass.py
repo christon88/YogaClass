@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
 
 
 #Importing personal stuff
@@ -15,22 +16,17 @@ password = open("private_info/password.txt").read()
 
 driver = webdriver.Firefox()
 driver.get(adress)
-wait = WebDriverWait(driver, 2)
-driver.implicitly_wait(2) # seconds
+wait = WebDriverWait(driver, 5)
 
-def interact(function_name):
-    refresh_check = driver.find_element_by_css_selector('div.dayName')
-    print(refresh_check.text)
-    function_name
-    wait.until(EC.staleness_of(refresh_check))                                      
+refresh_button = driver.find_element_by_css_selector('.fa-refresh')
+
 
 assert "Timeplan" in driver.title
 
+#Log in
 login = driver.find_element_by_css_selector('i.fa-sign-in')
-
 login.click()
 
-#Log in
 input_username = driver.find_element_by_css_selector('input#username')
 input_username.clear()
 input_username.send_keys(user)
@@ -39,33 +35,37 @@ input_password = driver.find_element_by_css_selector('input#password')
 input_password.send_keys(password)
 input_password.send_keys(Keys.RETURN)
 
-wait.until(EC.invisibility_of_element_located((By.CLASS_NAME, 'modal-backdrop')))
-wait.until(EC.invisibility_of_element_located((By.CLASS_NAME, 'modal-backdrop')))
+close_button = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "close")))
+close_button = driver.find_element_by_css_selector('button.close')
+close_button.click()
 
-#Find correct date
+time.sleep(3) #This is dumb
+
+#Find correct date 
+
+next_button = wait.until(EC.element_to_be_clickable((By.ID, "next")))
 next_button = driver.find_element_by_css_selector('#next')
-
-while driver.find_element_by_css_selector('div.dayName').text == "I DAG":
-    next_button.click()
-    
 
 classes = driver.find_elements_by_css_selector('div.instance')
 
+def next():
+    refresh_check = driver.find_element_by_css_selector('div.dayName')
+    #print(refresh_check.text)
+    next_button.click()
+    wait.until(EC.staleness_of(refresh_check))
+    print("interacted successfully")                                     
 
-                                                  
-interact(next_button.click())
-
-
-
-#next_button.click()
-
-#refresh()
-
+next()                                                
+next()
 
 #classes = driver.find_elements_by_css_selector('p.name')
 classes = driver.find_elements_by_css_selector('div.instance')
 
 for i in classes: 
-    print(i.text)
+    if 'R.O.P.E' in i.text:
+        target_class = i
+        
+target_class.find_element_by_css_selector('button.bookButton').click()
+
 
 #driver.close()
