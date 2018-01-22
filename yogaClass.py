@@ -55,7 +55,7 @@ def class_booking(class_name):
     
     next()                                                
     next()
-    
+    next()
     
     classes = driver.find_elements_by_css_selector('div.instance')
     
@@ -67,7 +67,7 @@ def class_booking(class_name):
     #driver.close()
     
 
-schedule.every().thursday.at("17:11").do(class_booking, "R.O.P.E")   
+schedule.every().sunday.at("22:01").do(class_booking, "Yin Yoga")   
 #schedule.every().sunday.at("22:01").do(class_booking, "R.O.P.E")
 
 while True:
